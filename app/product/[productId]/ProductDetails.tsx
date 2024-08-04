@@ -3,6 +3,9 @@
 import { Rating } from '@mui/material'
 import { useCallback, useState } from 'react'
 import SetColor from '../../components/products/SetColor'
+import SetQuantity from '../../components/products/SetQuantity'
+import Button from '../../components/Button'
+import ProductImage from '../../components/products/ProductImage'
 
 interface ProductDetailsProps {
   product: any
@@ -46,12 +49,33 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     product.reviews.length
 
   const handleColorSelect = useCallback((value: SelectedImgType) => {
-    
+    setCartProduct((prev) => {
+      return { ...prev, selectedImg: value }
+    })
   }, [cartProduct.selectedImg])
+
+  const handleQtyIncrease = useCallback(() => {
+    if(cartProduct.quantity === 99){
+      return;
+    }
+    setCartProduct((prev) => {
+      return { ...prev, quantity: ++prev.quantity }
+    })
+  }, [cartProduct])
+
+
+  const handleQtyDecrease = useCallback(() => {
+    if(cartProduct.quantity === 1){
+      return;
+    }
+    setCartProduct((prev) => {
+      return { ...prev, quantity: --prev.quantity }
+    })
+   }, [cartProduct])
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 gap-12'>
-      <div>images</div>
+      <ProductImage cartProduct={cartProduct} product={product} handleColorSelect={handleColorSelect}/>
       <div className='flex flex-col gap-1 text-gray-500 text-sm'>
         <h2 className='text-3xl font-medium text-gray-700'>{product.name}</h2>
         <div className='flex items-center gap-2'>
@@ -77,9 +101,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           handleColorSelect={handleColorSelect}
         />
         <Horizontal />
-        <div>Quantity</div>
+        <SetQuantity cartProduct={cartProduct} handleQtyDecrease={handleQtyDecrease} handleQtyIncrease={handleQtyIncrease} />
         <Horizontal />
-        <div>Add To cart</div>
+        <div className="max-w-md">
+
+        <Button label='Add To Cart' onClick={()=>{}}/>
+        </div>
       </div>
     </div>
   )
